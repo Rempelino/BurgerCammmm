@@ -13,10 +13,6 @@ class FrameGetter:
         if not self.cap.isOpened():
             raise ValueError("Error: Couldn't open the video file.")
 
-        #self.fps = self.cap.get(cv2.CAP_PROP_FPS)
-        #self.frame_time = 1 / self.fps
-        #self.last_frame_time = 0
-
     def get_frame(self):
         """
         Get the next frame from the video if enough time has passed.

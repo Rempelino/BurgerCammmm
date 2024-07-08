@@ -1,12 +1,22 @@
 from datetime import  datetime
 
 disable_print = True
-
 print_string = ""
-def millis():
-    now = datetime.now()
-    return now.microsecond // 1000
+last_milli_call = 0
 
+def millis():
+    global last_milli_call
+    now = datetime.now()
+    last_milli_call = now.microsecond // 1000
+    return last_milli_call
+
+def get_time():
+    global last_milli_call
+    now = datetime.now()
+    difference = now.microsecond // 1000 - last_milli_call
+    if difference < 0:
+        difference += 1000
+    return difference
 
 time_stamp = millis()
 

@@ -1,32 +1,53 @@
 import cv2
 import numpy as np
+import os
+
 
 class SliderWindow:
-    def __init__(self, window_name, min_value, max_value):
+    def __init__(self, window_name, slider_configs):
         self.window_name = window_name
-        self.min_value = min_value
-        self.max_value = max_value
-        self.current_value_slider_1 = 0
-        self.current_value_slider_2 = 17
+        self.slider_file = f"{window_name}_slider_values.txt"
 
-        # Create window
         cv2.namedWindow(self.window_name)
 
-        # Create sliders
-        cv2.createTrackbar("Slider 1", self.window_name, self.current_value_slider_1, max_value, self.on_slider1_change)
-        cv2.createTrackbar("Slider 2", self.window_name, self.current_value_slider_2, max_value, self.on_slider2_change)
+        self.slider_configs = slider_configs
+        self.current_values = self.load_slider_values()
 
-    def on_slider1_change(self, value):
-        self.current_value_slider_1 = value
+        # Ensure current_values has the correct length
+        if len(self.current_values) < len(slider_configs):
+            self.current_values.extend([config['min'] for config in slider_configs[len(self.current_values):]])
+        elif len(self.current_values) > len(slider_configs):
+            self.current_values = self.current_values[:len(slider_configs)]
 
-    def on_slider2_change(self, value):
-        self.current_value_slider_1 = value
+        self.save_slider_values()
+
+        for i, config in enumerate(slider_configs):
+            short_name = config['name'][:3] + config['name'].split()[-1][:3]
+            cv2.createTrackbar(short_name, self.window_name,
+                               self.current_values[i], config['max'] - config['min'],
+                               lambda value, index=i: self.on_slider_change(value, index))
+
+    def on_slider_change(self, value, index):
+        # Adjust the value to the actual range
+        actual_value = value + self.slider_configs[index]['min']
+        self.current_values[index] = actual_value
+        print(f"Slider {index} changed to {actual_value}")
+        self.save_slider_values()
 
     def get_slider_values(self):
-        slider1_value = cv2.getTrackbarPos("Slider 1", self.window_name)
-        slider2_value = cv2.getTrackbarPos("Slider 2", self.window_name)
-        return slider1_value, slider2_value
+        return self.current_values
 
-    def update(self):
-        # This method keeps the window open and responsive
-        cv2.waitKey(1)
+    def load_slider_values(self):
+        if os.path.exists(self.slider_file):
+            with open(self.slider_file, 'r') as file:
+                return [int(line.strip()) for line in file]
+        else:
+            return [config['min'] for config in self.slider_configs]
+
+    def save_slider_values(self):
+        with open(self.slider_file, 'w') as file:
+            for value in self.current_values:
+                file.write(f"{value}\n")
+
+    def __del__(self):
+        self.save_slider_values()

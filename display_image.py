@@ -9,8 +9,9 @@ class Display:
         self.m_gProcessFlag = 1
         self.window_name = window_name
 
-    def display_image(self, numpy_image, color=None):
+    def display_image(self, numpy_image, color=cv2.COLOR_HSV2BGR):
         #default color coding is BGR
+
         if color is not None:
             pimg = cv2.cvtColor(numpy_image, color)
         else:
