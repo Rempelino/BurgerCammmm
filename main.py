@@ -5,6 +5,10 @@ import cv2
 from frame import Frame
 from SliderWindow import SliderWindow
 from video_reader import FrameGetter
+from Frontend import Frontend
+
+
+frontend = Frontend()
 print_string = ""
 
 cam = Camera()
@@ -30,11 +34,10 @@ time_stamp = millis()
 use_video = True
 if use_video:
     frame_getter = FrameGetter(r"D:\Videos Burger Wback\video 10.avi")
-    #frame_getter = FrameGetter("video 10.avi")
 numpy_image = None
 while True:
     t = millis()
-    if numpy_image is None or slider_window.is_video_running():
+    if numpy_image is None or frontend.run_video:
         if use_video:
             numpy_image = frame_getter.get_frame()
         else:

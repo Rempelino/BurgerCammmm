@@ -1,31 +1,30 @@
-import numpy as np
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
 
 
-def convolve2d(image, kernel):
-    # Get dimensions
-    i_height, i_width = image.shape
-    k_height, k_width = kernel.shape
-
-    # Calculate output dimensions
-    out_height = i_height - k_height + 1
-    out_width = i_width - k_width + 1
-
-    # Initialize output
-    output = np.zeros((out_height, out_width))
-
-    # Perform convolution
-    for y in range(out_height):
-        for x in range(out_width):
-            output[y, x] = np.sum(image[y:y + k_height, x:x + k_width] * kernel)
-
-    return output
+@app.route('/api/data')
+def get_data():
+    data = {
+        'msg': 'Some message'
+    }
+    return jsonify(data)
 
 
-# Example usage
-image = np.random.rand(10, 10)
-sharpen = np.array([[0, -1, 0],
-                    [-1, 5, -1],
-                    [0, -1, 0]])
+@app.route('/api/action', methods=['POST'])
+def perform_action():
+    data = request.json
+    is_checked = data.get('isChecked', False)
+    # Perform some action based on the checkbox state
+    if is_checked:
+        result = "Action performed"
+    else:
+        result = "Action reversed"
 
-result = convolve2d(image, kernel)
-print(result)
+    return jsonify({"result": result})
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
