@@ -8,7 +8,7 @@ from video_reader import FrameGetter
 from Frontend import Frontend
 
 
-frontend = Frontend()
+
 print_string = ""
 
 cam = Camera()
@@ -27,14 +27,14 @@ slider_configs = [
 ]
 
 slider_window = SliderWindow("Custom Sliders", slider_configs)
-
-
 time_stamp = millis()
 
 use_video = True
 if use_video:
     frame_getter = FrameGetter(r"D:\Videos Burger Wback\video 10.avi")
+frontend = Frontend()
 numpy_image = None
+
 while True:
     t = millis()
     if numpy_image is None or frontend.run_video:
@@ -46,24 +46,10 @@ while True:
             continue
 
     frame = Frame(numpy_image, slider_window.get_slider_values(), 800, 2300)
-    display1 = Display("Original")
-    display1.display_image(frame.get_frame(with_rows=True, with_level=True))
-    print(f'this took {get_time()} milliseconds')
-    continue
-    #display2 = Display("Min Color")
-    #display2.display_image(frame.display_min_color())
-    #display3 = Display("Max Color")
-    #display3.display_image(frame.display_max_color())
-    display4 = Display("Monochrom")
-    display4.display_image(frame.get_frame_monochrom())
-    display4 = Display("Monochrom filtered 1")
-    display4.display_image(frame.get_frame_filtered_1())
-    display4 = Display("Monochrom filtered 2")
-    display4.display_image(frame.get_frame_filtered_2())
-    #display4 = Display("Monochrom filtered 3")
-    #display4.display_image(frame.get_frame_filtered_3())
-    display4 = Display("Pixel Summen")
-    display4.display_image(frame.get_frame_pixel_sums(with_rows=True))
+    frontend.update_frame(frame)
+    #display1 = Display("Original")
+    #display1.display_image(frame.get_frame(with_rows=True, with_level=True))
+
 
 
 

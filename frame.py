@@ -39,17 +39,23 @@ class Frame:
         self.max_color = np.array([param[1], param[3], param[5]])
         self.expected_lines = param[6]
         self.filter_constant = param[7:11]
-
         self.line_detection_threshold = Line_detection_threshold
 
-
-    def get_frame(self, with_rows=False, with_level=False):
-        new_frame = self.frame.copy()
-        if with_rows:
-            new_frame = self.add_line(new_frame)
-        if with_level:
-            new_frame = self.overlay_number(new_frame)
-        return new_frame
+    def get_frame(self, with_rows=False, with_level=False, filter=None):
+        if filter is None or filter == 'none':
+            new_frame = self.frame.copy()
+            if with_rows:
+                new_frame = self.add_line(new_frame)
+            if with_level:
+                new_frame = self.overlay_number(new_frame)
+            return new_frame
+        elif filter == "mono":
+            return self.get_frame_monochrom()
+        elif filter == "filter_1":
+            return self.get_frame_filtered_1()
+        elif filter == "filter_2":
+            return self.get_frame_filtered_2()
+        return None
 
     def display_max_color(self):
         new_frame = cv2.cvtColor(self.get_frame().copy(), cv2.COLOR_BGR2HSV)

@@ -3,6 +3,8 @@ import time
 
 
 class FrameGetter:
+    last_frame = None
+    frame_counter = 0
     def __init__(self, video_path):
         """
         Initialize the FrameGetter.
@@ -14,15 +16,12 @@ class FrameGetter:
             raise ValueError("Error: Couldn't open the video file.")
 
     def get_frame(self):
-        """
-        Get the next frame from the video if enough time has passed.
-        :return: NumPy array representing the frame, or None if it's not time for a new frame
-        """
-
         ret, frame = self.cap.read()
         if ret:
-            return frame
+            self.last_frame = frame
+            return self.last_frame
         else:
             self.cap.release()
             self.cap = cv2.VideoCapture(self.video_path)
+            return self.last_frame
 
