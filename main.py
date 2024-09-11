@@ -6,6 +6,7 @@ from frame import Frame
 from SliderWindow import SliderWindow
 from video_reader import FrameGetter
 from Frontend import Frontend
+from time import sleep
 
 
 
@@ -47,6 +48,7 @@ while True:
 
     frame = Frame(numpy_image, slider_window.get_slider_values(), 800, 2300)
     frontend.update_frame(frame)
+
     #display1 = Display("Original")
     #display1.display_image(frame.get_frame(with_rows=True, with_level=True))
 
